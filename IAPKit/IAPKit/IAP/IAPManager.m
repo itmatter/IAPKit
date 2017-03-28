@@ -9,6 +9,8 @@
 #import <StoreKit/StoreKit.h>
 
 #import "IAPManager.h"
+#import "Order.h"
+
 #import "MBProgressHUD.h"
 #import "NSData+Base64.h"
 
@@ -21,14 +23,26 @@
     #define LGLog(format,...) {}
 #endif
 
+#define ORDER_ID                @"orderId"
+#define ORDER_AMOUNT            @"amount"
+#define ORDER_RECEIPT           @"receipt"
+#define ORDER_PRODUCT_ID        @"productId"
+#define ORDER_LOCAL_TITLE       @"localTitle"
+#define ORDER_LOCAL_DESC        @"localDescription"
+#define ORDER_SERVER_ID         @"serverId"
+#define ORDER_USER_ID           @"account"
+#define ORDER_ROLE_ID           @"roleId"
+#define ORDER_PRICE             @"price"
+#define ORDER_EXTRA             @"extra"
+
 @interface IAPManager()<SKPaymentTransactionObserver,SKProductsRequestDelegate>
 
-@property (nonatomic, copy) completionResponseBlock mCompletionResBlock;            //请求成功
-@property (nonatomic, copy) errorResponseBlock      mErrorResBlock;                 //请求失败
+@property (nonatomic, copy) queryComplete mCompletionResBlock;              //请求成功
+@property (nonatomic, copy) queryError mErrorResBlock;                      //请求失败
 
-@property (nonatomic, copy) paymentCompletionBlock  mPaymentCompletionBlock;        //支付成功
-@property (nonatomic, copy) paymentErrorBlock       mPaymentErrorBlock;             //支付失败
-@property (nonatomic, copy) otherPaymentFinishBlock mOtherPaymentFinishBlock;       //其他支付方式完成
+@property (nonatomic, copy) paymentCompletion  mPaymentCompletionBlock;     //支付成功
+@property (nonatomic, copy) paymentError mPaymentErrorBlock;                //支付失败
+@property (nonatomic, copy) otherPaymentFinish mOtherPaymentFinishBlock;    //其他支付方式完成
 
 
 @property (nonatomic, strong) UIView *hubView;      //蒙版
@@ -82,26 +96,24 @@
 
 
 
-#pragma mark - 查询商品(第一步)
+#pragma mark - 第一步:查询商品
 - (void)queryProductsWithIds:(NSSet *)productIds
                        start:(void(^)())startBlock
-          completionResponse:(completionResponseBlock)completionBlock
-               errorResponse:(errorResponseBlock)errorBlock {
-    
+          completionResponse:(queryComplete)completionBlock
+               errorResponse:(queryError)errorBlock {
     
     startBlock();
     
     self.mCompletionResBlock = completionBlock;
     self.mErrorResBlock = errorBlock;
     
-    
     //请求商品.请求成功后跳转到代理方法,代理方法执行block
     [self startRequestProduct:productIds];
-    
     
     [self progressVShow];
 }
 
+//发起查询请求
 - (void)startRequestProduct : (NSSet *)productIds {
     //开始向apple服务器请求 相关delegate请看SKProductsRequestDelegate
     SKProductsRequest *proRqt = [[SKProductsRequest alloc] initWithProductIdentifiers:productIds];
@@ -112,7 +124,7 @@
 
 
 
-#pragma mark - 请求商品代理方法
+#pragma mark - 内购请求代理
 //接收到请求
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     [self progressVHide];
@@ -124,6 +136,11 @@
         [self showProductInfo:response];
         
         self.iapParam.product = [response.products lastObject];
+        
+        
+        
+        
+        
         //执行购买
         [self makePaymentWithProductParam:_iapParam
                        completionResponse:^(NSString *items) {
@@ -133,18 +150,27 @@
                        }errorResponse:^(NSError *error) {
                                 
                        }];
+        
+        
     }
+    
 };
+
+
+
 
 //什么情况会到这里??? 无网络的状态.或其他(暂时没考虑到)
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
+    LGLog(@"-------弹出错误信息----------");
+
     if (self.mErrorResBlock) {
         self.mErrorResBlock(error);
     }
 }
 
 - (void)requestDidFinish:(SKRequest *)request{
-   
+    LGLog(@"----------反馈信息结束--------------");
+
 };
 
 
@@ -153,19 +179,11 @@
 
 #pragma mark - 请求购买(第二步)
 - (void)makePaymentWithProductParam:(IAPParam *)proParam
-                 completionResponse:(paymentCompletionBlock)completionBlock
-                 otherPaymentFinish:(otherPaymentFinishBlock)finishBlock
-                      errorResponse:(paymentErrorBlock)errorBlock {
+                 completionResponse:(paymentCompletion)completionBlock
+                 otherPaymentFinish:(otherPaymentFinish)finishBlock
+                      errorResponse:(paymentError)errorBlock {
     
     //先判断内容参数是否正确
-    
-
-    //保存购买参数
-//    NSDictionary *iapParamData = [self modelToJSON:proParam];;
-//    [[NSUserDefaults standardUserDefaults] setObject:iapParamData forKey:@"iapParam"];
-//    [[NSUserDefaults standardUserDefaults] synchronize];
-
-    
     
     
     if ([SKPaymentQueue canMakePayments]) {
@@ -198,20 +216,27 @@
 
 //购买成功 进入向服务器验证流程
 - (void)completeTransaction:(SKPaymentTransaction *)transaction {
-//    NSString *receipt = @"";
-//    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-//        receipt = [[transaction transactionReceipt] base64EncodedStringWithSeparateLines:YES];
-//    }
-//    else {
-//        NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
-//        NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
-//        receipt= [receiptData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
-//    }
+    
+    NSString *receipt = @"";
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
+        receipt = [[transaction transactionReceipt] base64EncodedStringWithSeparateLines:YES];
+    }else {
+        NSURL *receiptUrl = [[NSBundle mainBundle] appStoreReceiptURL];
+        NSData *receiptData = [NSData dataWithContentsOfURL:receiptUrl];
+        receipt= [receiptData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+    }
+    
     // 发送receipt给本地服务器,验证有效性
-    //NSString *productIdentifier = [[transaction payment] productIdentifier];
-    //[self validateTransaction:transaction receipt:receipt productIdentifier:productIdentifier];
+    //  交易事务,收据凭证,产品信息
+    NSString *productIdentifier = [[transaction payment] productIdentifier];
+    [self validateTransaction:transaction receipt:receipt productIdentifier:productIdentifier];
 }
 
+
+//服务器验证
+- (void)validateTransaction:(SKPaymentTransaction *)transaction receipt:(NSString *)receipt productIdentifier:(NSString *)productIdentifier {
+    //具体需要服务器确认需要什么样的参数做判断.
+}
 
 
 #pragma mark - 购买代理方法
@@ -234,6 +259,11 @@
                  [self progressVHide];
                  LGLog(@"购买成功 : %@",aTransaction.payment.productIdentifier);
                  [queue finishTransaction:aTransaction];//结束交易后调用代理方法 removedTransactions
+                 
+                 //购买成功 进入向服务器验证流程
+                 //这里要考虑,当这里如果网络挂掉了,服务器并没有收到验证,那么用户直接将程序退出再进入的话,这里该怎么处理???最好将信息存在本地.
+                 
+                 [self completeTransaction:aTransaction];
                  
              }
                  break;
@@ -301,10 +331,80 @@
 
 
 
+-(void)purchaseProduct:(NSSet *)productIds
+            startQuery:(void (^)())startBlock
+         queryComplete:(queryComplete)queryCompletionBlock
+            queryError:(queryError)queryErrorBlock
+       paymentComplete:(paymentCompletion)paymentCompletionBlock
+    otherPaymentFinish:(otherPaymentFinish)otherPaymentFinishBlock
+          paymentError:(paymentError)paymentErrorBlock {
+    
+}
+
+
+
+
+
+
+#pragma mark - 将支付信息缓存到本地
+- (void)saveOrder:(Order *)order {
+    @try {
+        //获取字典
+        NSMutableDictionary *dictionary = [self getDictionaryWithOrder:order];
+        //将字典信息存储到偏好设置中
+        [self saveOrderToUserDefault:[NSMutableDictionary dictionaryWithDictionary:dictionary]];
+    }
+    @catch (NSException *exception) {
+        
+    }
+    @finally {
+        
+    }
+    
+}
+
+
+//将MVOrder转化为dictionary 以便储存到NSUserDefault
+- (NSMutableDictionary *)getDictionaryWithOrder:(Order *)order {
+    
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    @try {
+        LGLog(@"将订单信息保存在字典中");
+    }
+    @catch (NSException *exception) {
+    }
+    @finally {
+    }
+    return dictionary;
+}
+
+
+
+//将支付信息缓存到本地 实现方法
+- (void)saveOrderToUserDefault:(NSDictionary *)order {
+    NSUserDefaults *userDefault=[NSUserDefaults standardUserDefaults];
+    NSArray *orderList=[userDefault objectForKey:@"list"];
+    
+    if (orderList==nil) {
+        orderList=[[NSArray alloc] init];
+    }
+    
+    if (orderList == nil) {
+        orderList = [NSArray arrayWithObject:order];
+        [userDefault setObject:orderList forKey:@"list"];
+        [userDefault synchronize];
+    }else {
+        LGLog(@"做一些信息保存")
+    };
+}
+
+
+
 #pragma mark - 验证本地缓存
 - (void)verifyCacheOrderInventory {
     
 }
+
 
 
 

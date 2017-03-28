@@ -39,6 +39,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     //验证购买内容
+    NSLog(@"程序激活");
     
     
 }

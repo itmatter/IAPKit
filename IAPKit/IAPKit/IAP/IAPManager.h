@@ -10,13 +10,13 @@
 #import "IAPParam.h"
 
 //关于请求商品
-typedef void (^completionResponseBlock)(NSArray *);         //请求成功
-typedef void (^errorResponseBlock)(NSError *);              //请求失败
+typedef void (^queryComplete)(NSArray *);           //请求成功
+typedef void (^queryError)(NSError *);              //请求失败
 
 //关于购买商品
-typedef void (^paymentCompletionBlock)(NSString *);         //购买成功
-typedef void (^paymentErrorBlock)(NSError *);               //购买失败
-typedef void (^otherPaymentFinishBlock)();                  //其他购买方式
+typedef void (^paymentCompletion)(NSString *);         //购买成功
+typedef void (^paymentError)(NSError *);               //购买失败
+typedef void (^otherPaymentFinish)();                  //其他购买方式
 
 
 
@@ -53,8 +53,8 @@ typedef void (^otherPaymentFinishBlock)();                  //其他购买方式
  */
 - (void)queryProductsWithIds:(NSSet *)productIds
                        start:(void(^)())startBlock
-          completionResponse:(completionResponseBlock)completionBlock
-               errorResponse:(errorResponseBlock)errorBlock;
+          completionResponse:(queryComplete)completionBlock
+               errorResponse:(queryError)errorBlock;
 
 
 
@@ -73,9 +73,12 @@ typedef void (^otherPaymentFinishBlock)();                  //其他购买方式
  *  @param errorBlock      购买失败时回调
  */
 - (void)makePaymentWithProductParam:(IAPParam *)proParam
-                 completionResponse:(paymentCompletionBlock)completionBlock
-                 otherPaymentFinish:(otherPaymentFinishBlock)finishBlock
-                      errorResponse:(paymentErrorBlock)errorBlock;
+                 completionResponse:(paymentCompletion)completionBlock
+                 otherPaymentFinish:(otherPaymentFinish)finishBlock
+                      errorResponse:(paymentError)errorBlock;
+
+
+
 
 
 
@@ -86,6 +89,8 @@ typedef void (^otherPaymentFinishBlock)();                  //其他购买方式
  *  @abstract   验证本地订单.
  *
  *  @note   你可以在AppDelegate的这个代理方法中调用: - (void)applicationDidBecomeActive:(UIApplication *)application
+ *  考虑点:当内购完成后,AppStore返回一个交易事务,这个时候发送给服务器,通知服务器发货,当出现网络异常的时候,这里可以验证本地的订单信息.
+ *  如果有收据凭证,那么通知服务器.补发商品
  */
 - (void)verifyCacheOrderInventory;
 
