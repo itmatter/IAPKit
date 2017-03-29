@@ -251,7 +251,7 @@
 				TargetAttributes = {
 					044F70771E88E161004CEFFC = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 96LBVKMT33;
+						DevelopmentTeam = JKP4G35J39;
 						ProvisioningStyle = Automatic;
 					};
 					044F70901E88E162004CEFFC = {
@@ -476,10 +476,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 96LBVKMT33;
+				DEVELOPMENT_TEAM = JKP4G35J39;
 				INFOPLIST_FILE = IAPKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.acgameTest.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.IAPKit.LLG;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -488,10 +488,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 96LBVKMT33;
+				DEVELOPMENT_TEAM = JKP4G35J39;
 				INFOPLIST_FILE = IAPKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.acgameTest.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.IAPKit.LLG;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
