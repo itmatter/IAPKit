@@ -331,22 +331,17 @@
 
 
 
--(void)purchaseProduct:(NSSet *)productIds
-            startQuery:(void (^)())startBlock
-         queryComplete:(queryComplete)queryCompletionBlock
-            queryError:(queryError)queryErrorBlock
-       paymentComplete:(paymentCompletion)paymentCompletionBlock
-    otherPaymentFinish:(otherPaymentFinish)otherPaymentFinishBlock
-          paymentError:(paymentError)paymentErrorBlock {
-    
-}
-
-
-
-
 
 
 #pragma mark - 将支付信息缓存到本地
+
+/*-----------------------------------------------------------------------
+ 
+    这里面要存储什么本地内容要根据业务逻辑来确定,以下的内容很粗糙,
+    可以忽略里面的代码逻辑,自己来处理,这里面得自己完善一下
+ 
+ 
+ -----------------------------------------------------------------------*/
 - (void)saveOrder:(Order *)order {
     @try {
         //获取字典

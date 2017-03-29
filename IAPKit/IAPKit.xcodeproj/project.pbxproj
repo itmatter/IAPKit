@@ -19,7 +19,6 @@
 		044F70B41E88F345004CEFFC /* IAPParam.m in Sources */ = {isa = PBXBuildFile; fileRef = 044F70B31E88F345004CEFFC /* IAPParam.m */; };
 		044F70BC1E892269004CEFFC /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 044F70BB1E892269004CEFFC /* MBProgressHUD.m */; };
 		044F70BF1E89227D004CEFFC /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 044F70BE1E89227D004CEFFC /* NSData+Base64.m */; };
-		04DC22571E8A15B400897C75 /* UIViewController+ShakeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DC22561E8A15B400897C75 /* UIViewController+ShakeVC.m */; };
 		04DC225A1E8A6B3E00897C75 /* Order.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DC22591E8A6B3E00897C75 /* Order.m */; };
 /* End PBXBuildFile section */
 
@@ -66,8 +65,6 @@
 		044F70BB1E892269004CEFFC /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		044F70BD1E89227D004CEFFC /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		044F70BE1E89227D004CEFFC /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
-		04DC22551E8A15B400897C75 /* UIViewController+ShakeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+ShakeVC.h"; sourceTree = "<group>"; };
-		04DC22561E8A15B400897C75 /* UIViewController+ShakeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+ShakeVC.m"; sourceTree = "<group>"; };
 		04DC22581E8A6B3E00897C75 /* Order.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Order.h; sourceTree = "<group>"; };
 		04DC22591E8A6B3E00897C75 /* Order.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Order.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -183,8 +180,6 @@
 				044F70BE1E89227D004CEFFC /* NSData+Base64.m */,
 				044F70BA1E892269004CEFFC /* MBProgressHUD.h */,
 				044F70BB1E892269004CEFFC /* MBProgressHUD.m */,
-				04DC22551E8A15B400897C75 /* UIViewController+ShakeVC.h */,
-				04DC22561E8A15B400897C75 /* UIViewController+ShakeVC.m */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -328,7 +323,6 @@
 				04DC225A1E8A6B3E00897C75 /* Order.m in Sources */,
 				044F70B11E88E1EE004CEFFC /* IAPManager.m in Sources */,
 				044F70BC1E892269004CEFFC /* MBProgressHUD.m in Sources */,
-				04DC22571E8A15B400897C75 /* UIViewController+ShakeVC.m in Sources */,
 				044F70B41E88F345004CEFFC /* IAPParam.m in Sources */,
 				044F70BF1E89227D004CEFFC /* NSData+Base64.m in Sources */,
 				044F70831E88E161004CEFFC /* ViewController.m in Sources */,

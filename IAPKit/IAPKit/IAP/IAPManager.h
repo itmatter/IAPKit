@@ -37,12 +37,6 @@ typedef void (^otherPaymentFinish)();                  //其他购买方式
 - (void)removeIAPObserver;
 
 
-
-
-
-
-
-
 /**
  *  @abstract   向app后台请求商品
  *
@@ -56,14 +50,6 @@ typedef void (^otherPaymentFinish)();                  //其他购买方式
           completionResponse:(queryComplete)completionBlock
                errorResponse:(queryError)errorBlock;
 
-
-
-
-
-
-
-
-
 /**
  *  @abstract  购买产品
  *
@@ -76,13 +62,6 @@ typedef void (^otherPaymentFinish)();                  //其他购买方式
                  completionResponse:(paymentCompletion)completionBlock
                  otherPaymentFinish:(otherPaymentFinish)finishBlock
                       errorResponse:(paymentError)errorBlock;
-
-
-
-
-
-
-
 
 
 /**
